@@ -9,6 +9,7 @@ const handleLogout = async (req, res) => {
     // Is refreshToken in db?
     const foundUser = await User.findOne({ refreshToken: refreshToken }).exec()
 
+    //in frontEnd must clear cookies. If not we send res.clearCookie from backEnd
     if (!foundUser) {
         res.clearCookie('jwt', {
             httpOnly: true,

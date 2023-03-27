@@ -6,11 +6,12 @@ const handleNewUser = async (req, res) => {
     if (!email || !user || !pwd)
         return res
             .status(400)
-            .json({ message: 'Username and password are required.' })
+            .json({ message: 'Email, Username and Password are required.' })
 
-    // check for duplicate usernames in the db
+    // check for duplicate email in the db
     const duplicate = await User.findOne({ email }).exec()
-    if (duplicate) return res.status(409).json({ message: 'Duplicate email' }) //Conflict
+    if (duplicate)
+        return res.status(409).json({ message: 'Email is already in use' }) //Conflict
 
     try {
         const hashedPwd = await bcrypt.hash(pwd, 10)

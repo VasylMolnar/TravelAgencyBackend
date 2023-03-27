@@ -25,6 +25,7 @@ const handleLogin = async (req, res) => {
             {
                 UserInfo: {
                     username: foundUser.username,
+                    email,
                     roles: roles,
                 },
             },
@@ -36,7 +37,7 @@ const handleLogin = async (req, res) => {
 
         //create refresh token
         const refreshToken = jwt.sign(
-            { username: foundUser.username },
+            { email }, //decoded refreshTokenController
             process.env.REFRESH_TOKEN_SECRET,
             { expiresIn: '1d' }
         )

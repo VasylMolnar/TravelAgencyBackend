@@ -3,7 +3,6 @@ const { v4: uuidv4 } = require('uuid')
 const fsPromises = require('fs').promises
 const fs = require('fs')
 const path = require('path')
-const signale = require('signale')
 
 const eventsLog = async (message, logName) => {
     const data = `${format(new Date(), 'yyyy-MM-dd\tHH:mm:ss')}`

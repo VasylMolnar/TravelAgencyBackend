@@ -26,7 +26,8 @@ app.use(express.json())
 /****************** create routes  ***********************/
 //public routes
 app.use('/register', require('./routers/register'))
-// app.use('/auth', require('./routers/auth'))
+app.use('/auth', require('./routers/auth'))
+
 // app.use('/refresh', require('./routers/refresh'))
 // app.use('/logout', require('./routers/logout'))
 

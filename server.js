@@ -7,6 +7,8 @@ const mongoose = require('mongoose')
 const dbConnect = require('./config/dbConnect')
 const successLog = require('./middleware/Logger/successLog')
 const errorLog = require('./middleware/Logger/errorLog')
+const cookieParser = require('cookie-parser')
+
 const PORT = process.env.PORT
 
 // connect to MongoDB
@@ -23,13 +25,16 @@ app.use(express.urlencoded({ extended: false }))
 // built-in middleware for json
 app.use(express.json())
 
+//cookies parser
+app.use(cookieParser())
+
 /****************** create routes  ***********************/
 //public routes
 app.use('/register', require('./routers/register'))
 app.use('/auth', require('./routers/auth'))
+app.use('/logout', require('./routers/logout'))
 
 // app.use('/refresh', require('./routers/refresh'))
-// app.use('/logout', require('./routers/logout'))
 
 //private routes
 

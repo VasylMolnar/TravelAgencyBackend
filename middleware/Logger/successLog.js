@@ -3,7 +3,8 @@ const signale = require('signale')
 
 const successLog = (req, res, next) => {
     eventsLog(`${req.method}\t${req.headers.origin}\t${req.url}`, 'reqLog.txt')
-    signale.info(`${req.method} ${req.path}`)
+    signale.success(`${req.method} ${req.path}`)
+
     next()
 }
 

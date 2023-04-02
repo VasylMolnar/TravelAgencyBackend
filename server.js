@@ -8,6 +8,9 @@ const dbConnect = require('./config/dbConnect')
 const successLog = require('./middleware/Logger/successLog')
 const errorLog = require('./middleware/Logger/errorLog')
 const cookieParser = require('cookie-parser')
+const cors = require('cors')
+const corsOptions = require('./config/corsOptions')
+const credentials = require('./middleware/credentials')
 
 const PORT = process.env.PORT
 
@@ -27,6 +30,13 @@ app.use(express.json())
 
 //cookies parser
 app.use(cookieParser())
+
+// Handle options credentials check - before CORS!
+// and fetch cookies credentials requirement
+// app.use(credentials)
+
+// Cross Origin Resource Sharing (Web security)
+app.use(cors(corsOptions))
 
 /****************** create routes  ***********************/
 //public routes

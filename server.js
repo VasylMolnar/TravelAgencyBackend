@@ -8,6 +8,8 @@ const dbConnect = require('./config/dbConnect')
 const successLog = require('./middleware/Logger/successLog')
 const errorLog = require('./middleware/Logger/errorLog')
 const cookieParser = require('cookie-parser')
+const cors = require('cors')
+const allowedOrigin = require('./config/allowedOrigins')
 
 const PORT = process.env.PORT
 
@@ -26,7 +28,11 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
 //cookies parser
-app.use(cookieParser())
+app.use(cookieParser)
+
+// Handle options credentials check - before CORS!
+// and fetch cookies credentials requirement
+app.use(cors())
 
 /****************** create routes  ***********************/
 //public routes

@@ -48,6 +48,11 @@ app.use('/refresh', require('./routers/refresh'))
 //private routes
 app.use('/user', require('./routers/user'))
 
+//error route
+app.all('*', (req, res) => {
+    res.status(404).json({ error: '404 Not Found' })
+})
+
 //catch error Log
 app.use(errorLog)
 

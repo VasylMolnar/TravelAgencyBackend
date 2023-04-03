@@ -56,7 +56,13 @@ const handleLogin = async (req, res) => {
         })
 
         // Send authorization roles and access token to user
-        res.json({ user: foundUser.username, email, roles, accessToken })
+        res.json({
+            id: foundUser._id,
+            user: foundUser.username,
+            email,
+            roles,
+            accessToken,
+        })
     } else {
         res.status(401).json({
             message: 'Email or password error.',

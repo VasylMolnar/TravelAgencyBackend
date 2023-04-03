@@ -46,6 +46,7 @@ app.use('/logout', require('./routers/logout'))
 app.use('/refresh', require('./routers/refresh'))
 
 //private routes
+app.use('/user', require('./routers/user'))
 
 //catch error Log
 app.use(errorLog)

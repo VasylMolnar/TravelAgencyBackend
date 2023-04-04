@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 
 const handleTokenRefresh = async (req, res) => {
     const cookies = req.cookies
-    if (!cookies) return res.status(401).json({ message: 'Unauthorized' })
+    if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized' })
 
     //check to DB
     const refreshToken = cookies.jwt

@@ -1,5 +1,7 @@
 const router = require('express').Router()
 const userController = require('../controllers/userController')
+const verifyRoles = require('../middleware/verifyRoles')
+const roles = require('../config/roles_list')
 /*
 1: update User
 2: delete User
@@ -10,12 +12,12 @@ const userController = require('../controllers/userController')
 5: get by UserID
 */
 
-router.get('/', userController.handleAllUsers)
+router.get('/', verifyRoles(roles.Admin), userController.handleAllUsers)
 
 router
     .route('/:id')
-    .get(userController.handleUserById)
-    .delete(userController.handleDelete)
-    .put(userController.handleUpdate)
+    .get(verifyRoles(roles.Admin), userController.handleUserById)
+    .delete(verifyRoles(roles.Admin, roles.User), userController.handleDelete)
+    .put(verifyRoles(roles.Admin, roles.User), userController.handleUpdate)
 
 module.exports = router

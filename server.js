@@ -2,15 +2,15 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const path = require('path')
+const cookieParser = require('cookie-parser')
+const cors = require('cors')
 const signale = require('signale')
 const mongoose = require('mongoose')
 const dbConnect = require('./config/dbConnect')
 const successLog = require('./middleware/Logger/successLog')
 const errorLog = require('./middleware/Logger/errorLog')
-const cookieParser = require('cookie-parser')
-const cors = require('cors')
 const corsOptions = require('./config/corsOptions')
-const credentials = require('./middleware/credentials')
+const verifyJWT = require('./middleware/verifyJWT')
 
 const PORT = process.env.PORT
 
@@ -46,6 +46,9 @@ app.use('/logout', require('./routers/logout'))
 app.use('/refresh', require('./routers/refresh'))
 
 //private routes
+//verify User Auth by (JWT Access Token)
+app.use(verifyJWT)
+
 app.use('/user', require('./routers/user'))
 
 //error route

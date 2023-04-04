@@ -19,6 +19,5 @@ router
     .get(verifyRoles(roles.Admin), userController.handleUserById)
     .delete(verifyRoles(roles.Admin, roles.User), userController.handleDelete)
     .put(verifyRoles(roles.Admin, roles.User), userController.handleUpdate)
-// .put(userController.handleUpdate)
 
 module.exports = router

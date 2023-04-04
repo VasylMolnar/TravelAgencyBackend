@@ -59,6 +59,7 @@ const handleLogin = async (req, res) => {
         res.json({
             id: foundUser._id,
             user: foundUser.username,
+            pwd,
             email,
             roles,
             accessToken,

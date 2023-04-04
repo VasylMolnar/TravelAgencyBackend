@@ -14,7 +14,7 @@ const verifyJWT = (req, res, next) => {
         if (err) return res.status(403).json({ message: err.message }) //invalid token
 
         //add to req new item roles and sent to next fun (in verifyRoles)
-        req.roles = decoded.UserInfo.roles
+        req.roles = decoded.UserInfo.roles //or send roles json from client
 
         //if token is valid
         next()

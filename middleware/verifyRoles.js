@@ -1,10 +1,20 @@
-const role = require('../config/roles_list')
+const signale = require('signale')
 
 const verifyRoles = (...allowedRoles) => {
     return (req, res, next) => {
-        console.log(req.heder)
+        const roles = req.roles
+        signale.info('VerifyRoles: ', roles)
 
-        res.send(200)
+        if (!req?.roles) return res.sendStatus(401)
+
+        //find roles
+        const rolesArray = [...allowedRoles]
+        const result = roles
+            .map((role) => rolesArray.includes(role))
+            .find((val) => val === true)
+        if (!result) return res.sendStatus(401)
+
+        next()
     }
 }
 

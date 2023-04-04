@@ -7,6 +7,8 @@ const handleTokenRefresh = async (req, res) => {
 
     //check to DB
     const refreshToken = cookies.jwt
+    console.log('', refreshToken)
+
     const foundUser = await User.findOne({ refreshToken }).exec()
     if (!foundUser) return res.sendStatus(403) //Forbidden
 
@@ -15,8 +17,9 @@ const handleTokenRefresh = async (req, res) => {
         refreshToken,
         process.env.REFRESH_TOKEN_SECRET,
         (err, decoded) => {
-            if (err || foundUser.email !== decoded.email)
+            if (err || foundUser.email !== decoded.email) {
                 return res.sendStatus(403)
+            }
 
             const roles = Object.values(foundUser.roles).filter(Boolean)
 

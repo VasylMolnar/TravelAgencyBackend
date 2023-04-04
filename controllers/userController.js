@@ -1,5 +1,6 @@
 const User = require('../model/User')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 //admin and user
 const handleDelete = async (req, res) => {
@@ -18,17 +19,35 @@ const handleUpdate = async (req, res) => {
     const updateData = req.body
 
     //hashed PWD
-    const hashedPwd = await bcrypt.hash(updateData.password, 10)
+    updateData.password = await bcrypt.hash(updateData.password, 10)
 
-    //find and update user in DB by userID
-    const currentUser = await User.findByIdAndUpdate(
-        { _id: userID },
-        { ...updateData, password: hashedPwd }
-    ).exec()
+    //find current User by id
+    const currentUser = await User.findById(userID)
 
-    !currentUser
-        ? res.status(501).json({ message: 'User cant be update' })
-        : res.status(200).json({ message: 'User successfully update' })
+    //change Refresh token if User change Email (because we decode email in Access Token and if we not change Refresh we have 404 in refreshTokenController)
+    //decode email !== User.email(user email change in client)
+    if (currentUser.email !== updateData.email) {
+        updateData.refreshToken = jwt.sign(
+            { email: updateData.email }, //decoded new Email for refreshTokenController
+            process.env.REFRESH_TOKEN_SECRET,
+            { expiresIn: '1d' }
+        )
+    }
+
+    //save update data to User
+    try {
+        await currentUser.updateOne({ ...updateData }, { ...currentUser })
+
+        // res.cookies('jwt', currentUser.refreshToken, {
+        //     httpOnly: true,
+        //     sameSite: 'None',
+        //     secure: true,
+        //     maxAge: 24 * 60 * 60 * 1000,
+        // })
+        res.status(200).json({ message: 'User successfully update' })
+    } catch (e) {
+        res.status(501).json({ message: 'User cant be update' })
+    }
 }
 
 //admin

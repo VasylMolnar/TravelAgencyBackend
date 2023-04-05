@@ -3,19 +3,18 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 const handleLogin = async (req, res) => {
-    const { email, pwd } = req.body
-    if (!email || !pwd)
+    const { email, password } = req.body
+    if (!email || !password)
         return res
             .status(400)
             .json({ message: 'Email and password are required.' })
 
     //found User by email
     const foundUser = await User.findOne({ email }).exec()
-    console.log(foundUser)
     if (!foundUser) return res.status(401).json({ message: 'Not found' })
 
     // evaluate password
-    const match = await bcrypt.compare(pwd, foundUser.password)
+    const match = await bcrypt.compare(password, foundUser.password)
 
     if (match) {
         //select roles form user
@@ -32,7 +31,7 @@ const handleLogin = async (req, res) => {
             },
             process.env.ACCESS_TOKEN_SECRET,
             {
-                expiresIn: '1m',
+                expiresIn: '1d',
             }
         )
 
@@ -58,9 +57,7 @@ const handleLogin = async (req, res) => {
         // Send authorization roles and access token to user
         res.json({
             id: foundUser._id,
-            user: foundUser.username,
-            pwd,
-            email,
+            username: foundUser.username,
             roles,
             accessToken,
         })

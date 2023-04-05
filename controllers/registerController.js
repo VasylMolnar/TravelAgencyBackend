@@ -2,8 +2,8 @@ const User = require('../model/User')
 const bcrypt = require('bcrypt')
 
 const handleNewUser = async (req, res) => {
-    const { email, user, pwd } = req.body
-    if (!email || !user || !pwd)
+    const { email, username, password } = req.body
+    if (!email || !username || !password)
         return res
             .status(400)
             .json({ message: 'Email, Username and Password are required.' })
@@ -14,17 +14,17 @@ const handleNewUser = async (req, res) => {
         return res.status(409).json({ message: 'Email is already in use' }) //Conflict
 
     try {
-        const hashedPwd = await bcrypt.hash(pwd, 10)
+        const hashedPwd = await bcrypt.hash(password, 10)
 
         await User.create({
             email,
-            username: user,
+            username,
             password: hashedPwd,
         })
 
-        res.status(201).json({ success: `New user ${user} created!` })
+        res.status(201).json({ success: `New user ${username} created!` })
     } catch (e) {
-        res.status(500).json({ message: e.message })
+        res.status(500).json(e.message)
     }
 }
 

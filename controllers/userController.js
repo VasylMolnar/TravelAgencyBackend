@@ -18,6 +18,8 @@ const handleUpdate = async (req, res) => {
     const userID = req.params.id
     const updateData = req.body
 
+    console.log('userID', userID)
+
     //hashed PWD
     updateData.password = await bcrypt.hash(updateData.password, 10)
 

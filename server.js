@@ -10,6 +10,7 @@ const dbConnect = require('./config/dbConnect')
 const successLog = require('./middleware/Logger/successLog')
 const errorLog = require('./middleware/Logger/errorLog')
 const corsOptions = require('./config/corsOptions')
+const credentials = require('./middleware/credentials')
 const verifyJWT = require('./middleware/verifyJWT')
 
 const PORT = process.env.PORT
@@ -33,7 +34,7 @@ app.use(cookieParser())
 
 // Handle options credentials check - before CORS!
 // and fetch cookies credentials requirement
-// app.use(credentials)
+app.use(credentials)
 
 // Cross Origin Resource Sharing (Web security)
 app.use(cors(corsOptions))

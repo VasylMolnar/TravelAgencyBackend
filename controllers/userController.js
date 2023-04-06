@@ -16,11 +16,7 @@ const handleDelete = async (req, res) => {
 
 const handleUpdate = async (req, res) => {
     const userID = req.params.id
-    const updateData = req.body
-
-    console.log('userID', userID)
-
-    console.log('userData', req.body)
+    const updateData = { ...req.body }
 
     //hashed PWD
     updateData.password = await bcrypt.hash(updateData.password, 10)
@@ -49,7 +45,9 @@ const handleUpdate = async (req, res) => {
     try {
         await currentUser.updateOne({ ...updateData }, { ...currentUser })
 
-        res.status(200).json({ message: 'User successfully update' })
+        res.status(200).json({
+            message: 'User successfully update',
+        })
     } catch (e) {
         res.status(501).json({ message: 'User cant be update' })
     }

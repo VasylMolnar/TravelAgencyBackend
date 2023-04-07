@@ -24,9 +24,9 @@ const handleLogin = async (req, res) => {
         const accessToken = jwt.sign(
             {
                 UserInfo: {
+                    id: foundUser._id,
                     username: foundUser.username,
-                    email,
-                    roles: roles,
+                    roles,
                 },
             },
             process.env.ACCESS_TOKEN_SECRET,
@@ -55,12 +55,7 @@ const handleLogin = async (req, res) => {
         })
 
         // Send authorization roles and access token to user
-        res.json({
-            id: foundUser._id,
-            username: foundUser.username,
-            roles,
-            accessToken,
-        })
+        res.json({ accessToken })
     } else {
         res.status(401).json({
             message: 'Email or password error.',

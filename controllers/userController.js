@@ -9,9 +9,16 @@ const handleDelete = async (req, res) => {
     //find and delete user in DB by userID
     const currentUser = await User.findOneAndDelete({ _id: userID }).exec()
 
-    !currentUser
-        ? res.status(501).json({ message: 'User cant be deleted' })
-        : res.status(200).json({ message: 'User successfully deleted' })
+    if (!currentUser) {
+        res.status(501).json({ message: 'User cant be deleted' })
+    } else {
+        res.status(200).json({ message: 'User successfully deleted' })
+        res.clearCookie('jwt', {
+            httpOnly: true,
+            sameSite: 'None',
+            secure: true,
+        })
+    }
 }
 
 const handleUpdate = async (req, res) => {

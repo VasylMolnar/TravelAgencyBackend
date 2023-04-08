@@ -1,5 +1,6 @@
 const User = require('../model/User')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
 const handleTokenRefresh = async (req, res) => {
     const cookies = req.cookies
@@ -15,7 +16,7 @@ const handleTokenRefresh = async (req, res) => {
     jwt.verify(
         refreshToken,
         process.env.REFRESH_TOKEN_SECRET,
-        (err, decoded) => {
+        async (err, decoded) => {
             //user email === REFRESH_TOKEN decoded {email} authCont...
             if (err || foundUser.email !== decoded.email) {
                 return res.sendStatus(403)
@@ -23,13 +24,17 @@ const handleTokenRefresh = async (req, res) => {
 
             const roles = Object.values(foundUser.roles).filter(Boolean)
 
+            const match = await bcrypt.compare(foundUser.password)
+
             //create JWT token
             const accessToken = jwt.sign(
                 {
                     UserInfo: {
+                        id: foundUser._id,
                         username: foundUser.username,
                         email: foundUser.email,
-                        roles: roles,
+                        password: match,
+                        roles,
                     },
                 },
                 process.env.ACCESS_TOKEN_SECRET,
@@ -38,7 +43,7 @@ const handleTokenRefresh = async (req, res) => {
                 }
             )
 
-            res.json({ roles, accessToken })
+            res.json({ accessToken })
         }
     )
 }

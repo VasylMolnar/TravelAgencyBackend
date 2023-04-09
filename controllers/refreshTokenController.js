@@ -24,7 +24,7 @@ const handleTokenRefresh = async (req, res) => {
 
             const roles = Object.values(foundUser.roles).filter(Boolean)
 
-            const match = await bcrypt.compare(foundUser.password)
+            //const match = await bcrypt.compare(foundUser.password)
 
             //create JWT token
             const accessToken = jwt.sign(
@@ -33,7 +33,7 @@ const handleTokenRefresh = async (req, res) => {
                         id: foundUser._id,
                         username: foundUser.username,
                         email: foundUser.email,
-                        password: match,
+                        //password: match,
                         roles,
                     },
                 },

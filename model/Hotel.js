@@ -41,9 +41,6 @@ const hotelSchema = new Schema({
         type: String,
         required: true,
     },
-
-    rooms: {
-        type: Array,
-        required: true,
-    },
 })
+
+module.exports = mongoose.model('Hotel', hotelSchema)

@@ -46,6 +46,8 @@ app.use('/auth', require('./routers/auth'))
 app.use('/logout', require('./routers/logout'))
 app.use('/refresh', require('./routers/refresh'))
 
+app.use('/hotel', require('./routers/hotel'))
+
 //private routes
 //verify User Auth by (JWT Access Token)
 app.use(verifyJWT)

@@ -77,7 +77,7 @@ const handleAllUsers = async (req, res) => {
     const listOfUsers = await User.find().exec()
 
     !listOfUsers
-        ? res.status(0).json({ message: 'List is empty' })
+        ? res.status(500).json({ message: 'List is empty' })
         : res.status(200).json(listOfUsers)
 }
 

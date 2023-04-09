@@ -23,8 +23,8 @@ const userSchema = new Schema({
         required: true,
     },
     refreshToken: String,
-    GalleryID: String,
-    HotelsID: {},
+    galleryID: String,
+    hotelsID: {},
 })
 
 module.exports = mongoose.model('User', userSchema)

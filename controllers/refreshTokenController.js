@@ -23,6 +23,7 @@ const handleTokenRefresh = async (req, res) => {
             }
 
             const roles = Object.values(foundUser.roles).filter(Boolean)
+            //console.log(roles)
 
             //const match = await bcrypt.compare(foundUser.password)
 

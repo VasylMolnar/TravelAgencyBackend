@@ -18,6 +18,6 @@ router
     .route('/:id')
     .get(verifyRoles(roles.Admin), userController.handleUserById)
     .delete(verifyRoles(roles.Admin, roles.User), userController.handleDelete)
-    .put(verifyRoles(roles.Admin, roles.User), userController.handleUpdate)
+    .put(verifyRoles(roles.User), userController.handleUpdate)
 
 module.exports = router

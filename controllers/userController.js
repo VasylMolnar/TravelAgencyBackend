@@ -65,7 +65,13 @@ const handleUserById = async (req, res) => {
     const userID = req.params.id
 
     //find and Get user by Id in DB
-    const currentUser = await User.findOne({ _id: userID }).exec()
+    const currentUser = await User.findOne({ _id: userID })
+        .exec()
+        .map((item) => {
+            return { id: item._id, username: item.username, email: item.email }
+        })
+
+    console.log('', currentUser)
 
     !currentUser
         ? res.status(501).json({ message: 'User not found' })
@@ -74,7 +80,9 @@ const handleUserById = async (req, res) => {
 
 const handleAllUsers = async (req, res) => {
     //return all list Users
-    const listOfUsers = await User.find().exec()
+    const listOfUsers = (await User.find().exec()).map((item) => {
+        return { id: item._id, username: item.username, email: item.email }
+    })
 
     !listOfUsers
         ? res.status(500).json({ message: 'List is empty' })

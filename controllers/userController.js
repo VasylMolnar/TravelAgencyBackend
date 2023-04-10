@@ -71,7 +71,7 @@ const handleUserById = async (req, res) => {
             return { id: item._id, username: item.username, email: item.email }
         })
 
-    console.log('', currentUser)
+    // console.log('', currentUser)
 
     !currentUser
         ? res.status(501).json({ message: 'User not found' })

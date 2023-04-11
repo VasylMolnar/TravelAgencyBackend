@@ -1,6 +1,7 @@
 const User = require('../model/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const { format } = require('date-fns')
 
 const handleLogin = async (req, res) => {
     const { email, password } = req.body
@@ -19,6 +20,7 @@ const handleLogin = async (req, res) => {
     if (match) {
         //select roles form user
         const roles = Object.values(foundUser.roles).filter(Boolean)
+        const newDate = await format(new Date(), 'yyyy-MM-dd\tHH:mm:ss')
 
         //create JWT token
         const accessToken = jwt.sign(
@@ -41,9 +43,11 @@ const handleLogin = async (req, res) => {
             process.env.REFRESH_TOKEN_SECRET,
             { expiresIn: '1d' }
         )
+        console.log(foundUser.date)
 
         // Saving refreshToken with current user
         foundUser.refreshToken = refreshToken
+        foundUser.date = newDate
         await foundUser.save()
 
         // Creates Secure Cookie with refresh token

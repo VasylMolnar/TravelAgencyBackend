@@ -68,7 +68,12 @@ const handleUserById = async (req, res) => {
     const currentUser = await User.findOne({ _id: userID })
         .exec()
         .map((item) => {
-            return { id: item._id, username: item.username, email: item.email }
+            return {
+                id: item._id,
+                username: item.username,
+                email: item.email,
+                date: item.date,
+            }
         })
 
     // console.log('', currentUser)
@@ -81,7 +86,12 @@ const handleUserById = async (req, res) => {
 const handleAllUsers = async (req, res) => {
     //return all list Users
     const listOfUsers = (await User.find().exec()).map((item) => {
-        return { id: item._id, username: item.username, email: item.email }
+        return {
+            id: item._id,
+            username: item.username,
+            email: item.email,
+            date: item.date,
+        }
     })
 
     !listOfUsers

@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken')
 const handleDelete = async (req, res) => {
     const userID = req.params.id
 
+    console.log('id', userID)
+
     //find and delete user in DB by userID
     const currentUser = await User.findOneAndDelete({ _id: userID }).exec()
 
@@ -13,11 +15,6 @@ const handleDelete = async (req, res) => {
         res.status(501).json({ message: 'User cant be deleted' })
     } else {
         res.status(200).json({ message: 'User successfully deleted' })
-        res.clearCookie('jwt', {
-            httpOnly: true,
-            sameSite: 'None',
-            secure: true,
-        })
     }
 }
 

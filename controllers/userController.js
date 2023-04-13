@@ -96,9 +96,17 @@ const handleAllUsers = async (req, res) => {
         : res.status(200).json(listOfUsers)
 }
 
+const handleUploadImg = async (req, res) => {
+    const imagePath = req.file
+    console.log('', imagePath)
+    // Додайте код для збереження шляху до зображення в базу даних MongoDB
+    res.send('Зображення успішно завантажено на сервер!')
+}
+
 module.exports = {
     handleDelete,
     handleUpdate,
     handleAllUsers,
     handleUserById,
+    handleUploadImg,
 }

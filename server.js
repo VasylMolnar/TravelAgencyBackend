@@ -48,11 +48,11 @@ app.use('/refresh', require('./routers/refresh'))
 
 app.use('/hotel', require('./routers/hotel'))
 
+app.use('/user', require('./routers/user'))
+
 //private routes
 //verify User Auth by (JWT Access Token)
 app.use(verifyJWT)
-
-app.use('/user', require('./routers/user'))
 
 //error route
 app.all('*', (req, res) => {

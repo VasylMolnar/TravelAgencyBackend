@@ -5,6 +5,7 @@ const verifyRoles = (...allowedRoles) => {
         const roles = req.roles
         signale.info('VerifyRoles: ', roles)
 
+        console.log('', roles)
         if (!req?.roles) return res.sendStatus(401)
 
         //find roles

@@ -21,10 +21,6 @@ router
     .get(verifyRoles(roles.Admin), userController.handleUserById)
     .delete(verifyRoles(roles.Admin, roles.User), userController.handleDelete)
     .put(verifyRoles(roles.User), userController.handleUpdate)
-    .post(
-        verifyRoles(roles.User),
-        upload.single('image'),
-        userController.handleUploadImg
-    )
+    .post(upload.single('image'), userController.handleUploadImg)
 
 module.exports = router

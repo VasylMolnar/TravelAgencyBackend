@@ -62,22 +62,15 @@ const handleUserById = async (req, res) => {
     const userID = req.params.id
 
     //find and Get user by Id in DB
-    const currentUser = await User.findOne({ _id: userID })
-        .exec()
-        .map((item) => {
-            return {
-                id: item._id,
-                username: item.username,
-                email: item.email,
-                date: item.date,
-            }
-        })
+    const currentUser = await User.findById({
+        _id: userID,
+    }).exec()
 
-    // console.log('', currentUser)
+    const { id, username, email, date, avatar, password } = currentUser
 
     !currentUser
         ? res.status(501).json({ message: 'User not found' })
-        : res.status(200).json(currentUser)
+        : res.status(200).json({ id, username, email, date, avatar, password })
 }
 
 const handleAllUsers = async (req, res) => {
@@ -97,13 +90,29 @@ const handleAllUsers = async (req, res) => {
 }
 
 const handleUploadImg = async (req, res) => {
+    const userID = req.params.id
     const imagePath = req.file.path
     const folderToSave = req.body.folder
 
-    // Додайте код для збереження шляху до зображення в базу даних MongoDB
-    res.status(201).json({
-        message: 'Зображення успішно завантажено на сервер!',
-    })
+    //find User
+    const currentUser = await User.findById({ _id: userID }).exec()
+    if (!currentUser) res.status(501).json({ message: 'User not found' })
+
+    try {
+        folderToSave === 'Avatar'
+            ? (currentUser.avatar = imagePath)
+            : (currentUser.gallery = imagePath)
+
+        await currentUser.save()
+
+        res.status(201).json({
+            message: 'Зображення успішно завантажено на сервер!',
+        })
+    } catch (e) {
+        res.status(501).json({
+            message: e,
+        })
+    }
 }
 
 module.exports = {

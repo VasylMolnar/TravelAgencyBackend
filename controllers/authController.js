@@ -43,7 +43,7 @@ const handleLogin = async (req, res) => {
             process.env.REFRESH_TOKEN_SECRET,
             { expiresIn: '1d' }
         )
-        console.log(foundUser.date)
+        // console.log(foundUser.date)
 
         // Saving refreshToken with current user
         foundUser.refreshToken = refreshToken

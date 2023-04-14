@@ -13,6 +13,8 @@ const corsOptions = require('./config/corsOptions')
 const credentials = require('./middleware/credentials')
 const verifyJWT = require('./middleware/verifyJWT')
 
+const multer = require('multer')
+
 const PORT = process.env.PORT
 
 // connect to MongoDB

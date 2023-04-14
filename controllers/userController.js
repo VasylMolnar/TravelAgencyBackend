@@ -98,6 +98,8 @@ const handleAllUsers = async (req, res) => {
 
 const handleUploadImg = async (req, res) => {
     const imagePath = req.file.path
+    const folderToSave = req.body.folder
+
     // Додайте код для збереження шляху до зображення в базу даних MongoDB
     res.status(201).json({
         message: 'Зображення успішно завантажено на сервер!',

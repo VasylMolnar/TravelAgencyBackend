@@ -25,16 +25,11 @@ const handleTokenRefresh = async (req, res) => {
             const roles = Object.values(foundUser.roles).filter(Boolean)
             //console.log(roles)
 
-            //const match = await bcrypt.compare(foundUser.password)
-
             //create JWT token
             const accessToken = jwt.sign(
                 {
                     UserInfo: {
                         id: foundUser._id,
-                        username: foundUser.username,
-                        email: foundUser.email,
-                        //password: match,
                         roles,
                     },
                 },

@@ -23,7 +23,8 @@ const handleUpdate = async (req, res) => {
     const updateData = { ...req.body }
 
     //hashed PWD
-    updateData.password = await bcrypt.hash(updateData.password, 10)
+
+    updateData.password = await bcrypt.hash(updateData.password, 10) //error
 
     //find current User by id
     const currentUser = await User.findById(userID)
@@ -91,8 +92,10 @@ const handleAllUsers = async (req, res) => {
 
 const handleUploadImg = async (req, res) => {
     const userID = req.params.id
-    const imagePath = req.file.path
+    const imagePath = req.file.path.split('uploads')[1]
     const folderToSave = req.body.folder
+
+    console.log(imagePath)
 
     //find User
     const currentUser = await User.findById({ _id: userID }).exec()

@@ -13,8 +13,6 @@ const corsOptions = require('./config/corsOptions')
 const credentials = require('./middleware/credentials')
 const verifyJWT = require('./middleware/verifyJWT')
 
-const multer = require('multer')
-
 const PORT = process.env.PORT
 
 // connect to MongoDB
@@ -30,6 +28,9 @@ app.use(express.urlencoded({ extended: false }))
 
 // built-in middleware for json
 app.use(express.json())
+
+//serve static files
+app.use(express.static(path.join(__dirname, 'uploads')))
 
 //cookies parser
 app.use(cookieParser())

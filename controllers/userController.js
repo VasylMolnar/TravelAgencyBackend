@@ -5,8 +5,7 @@ const jwt = require('jsonwebtoken')
 //admin and user
 const handleDelete = async (req, res) => {
     const userID = req.params.id
-
-    console.log('id', userID)
+    const roles = req.headers.roles.split(',')
 
     //find and delete user in DB by userID
     const currentUser = await User.findOneAndDelete({ _id: userID }).exec()
@@ -14,7 +13,7 @@ const handleDelete = async (req, res) => {
     if (!currentUser) {
         res.status(501).json({ message: 'User cant be deleted' })
     } else {
-        res.status(200).json({ message: 'User successfully deleted' })
+        res.status(200).json({ message: 'User successfully deleted', roles })
     }
 }
 
@@ -22,12 +21,13 @@ const handleUpdate = async (req, res) => {
     const userID = req.params.id
     const updateData = { ...req.body }
 
-    //hashed PWD
-
-    updateData.password = await bcrypt.hash(updateData.password, 10) //error
-
     //find current User by id
     const currentUser = await User.findById(userID)
+
+    //hashed PWD if user change password
+    if (currentUser.password !== updateData.password) {
+        updateData.password = await bcrypt.hash(updateData.password, 10)
+    }
 
     //change Refresh token if User change Email (because we decode email in Access Token and if we not change Refresh we have 404 in refreshTokenController)
     //decode email !== User.email(user email change in client)

@@ -31,8 +31,8 @@ const userSchema = new Schema({
         data: { type: Buffer },
         contentType: { type: String },
     },
-    refreshToken: String,
     galleryID: String,
+    refreshToken: String,
     hotelsID: {},
 })
 

@@ -92,18 +92,22 @@ const handleAllUsers = async (req, res) => {
 
 const handleUploadImg = async (req, res) => {
     const userID = req.params.id
-    const imagePath = req.file.path.split('uploads')[1]
+    const imageInfo = req.file
     const folderToSave = req.body.folder
 
-    console.log(imagePath)
+    // console.log(folderToSave, userID, imageInfo)
 
-    //find User
+    // find User
     const currentUser = await User.findById({ _id: userID }).exec()
     if (!currentUser) res.status(501).json({ message: 'User not found' })
 
     try {
         folderToSave === 'Avatar'
-            ? (currentUser.avatar = imagePath)
+            ? (currentUser.avatar = {
+                  name: req.file.originalname,
+                  data: req.file.buffer,
+                  contentType: req.file.mimetype,
+              })
             : (currentUser.gallery = imagePath)
 
         await currentUser.save()

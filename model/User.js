@@ -27,7 +27,9 @@ const userSchema = new Schema({
         required: true,
     },
     avatar: {
-        type: String,
+        name: { type: String },
+        data: { type: Buffer },
+        contentType: { type: String },
     },
     refreshToken: String,
     galleryID: String,

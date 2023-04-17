@@ -82,6 +82,7 @@ const handleAllUsers = async (req, res) => {
             username: item.username,
             email: item.email,
             date: item.date,
+            avatar: item.avatar,
         }
     })
 
@@ -104,9 +105,9 @@ const handleUploadImg = async (req, res) => {
     try {
         folderToSave === 'Avatar'
             ? (currentUser.avatar = {
-                  name: req.file.originalname,
-                  data: req.file.buffer,
-                  contentType: req.file.mimetype,
+                  name: imageInfo.originalname,
+                  data: imageInfo.buffer,
+                  contentType: imageInfo.mimetype,
               })
             : (currentUser.gallery = imagePath)
 

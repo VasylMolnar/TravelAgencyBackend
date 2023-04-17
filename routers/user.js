@@ -2,10 +2,9 @@ const router = require('express').Router()
 const userController = require('../controllers/userController')
 const verifyRoles = require('../middleware/verifyRoles')
 const roles = require('../config/roles_list')
-// const upload = require('../middleware/multer')
-
 const multer = require('multer')
 const upload = multer()
+
 /*
 1: update User
 2: delete User

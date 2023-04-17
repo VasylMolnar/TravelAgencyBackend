@@ -3,7 +3,19 @@ const Hotel = require('../model/Hotel')
 const handleAllHotels = async (req, res) => {
     //return all list Hotels
 
-    const listOfHotels = await Hotel.find().exec()
+    const listOfHotels = (await Hotel.find().exec()).map((item) => {
+        return {
+            id: item._id,
+            hotelName: item.hotelName,
+            country: item.country,
+            city: item.city,
+            address: item.address,
+            img: item.img,
+            price: item.price,
+            capacity: item.capacity,
+            description: item.description,
+        }
+    })
 
     !listOfHotels
         ? res.status(500).json({ message: 'List is empty' })

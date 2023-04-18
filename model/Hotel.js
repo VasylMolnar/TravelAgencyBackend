@@ -22,9 +22,16 @@ const hotelSchema = new Schema({
         required: true,
     },
 
+    // img: [
+    //     {
+    //         name: { type: String },
+    //         data: { type: Buffer },
+    //         contentType: { type: String },
+    //     },
+    // ],
+
     img: {
-        type: Array,
-        required: true,
+        type: String,
     },
 
     price: {

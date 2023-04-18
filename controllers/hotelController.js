@@ -36,9 +36,19 @@ const handleHotel = async (req, res) => {
 
 const handleCreateHotel = async (req, res) => {
     if (!req?.body) return res.sendStatus(400)
+    const value = JSON.parse(req.body.values)
+    const imageInfo = req.files
+
+    const images = imageInfo.map((item) => ({
+        name: item.originalname,
+        data: item.buffer,
+        contentType: item.mimetype,
+    }))
+
+    console.log({ ...value, img: images })
 
     try {
-        await Hotel.create({ ...req.body })
+        await Hotel.create({ ...value, img: images })
         res.sendStatus(201)
     } catch (e) {
         res.status(500).json(e.message)

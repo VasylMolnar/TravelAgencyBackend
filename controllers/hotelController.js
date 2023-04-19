@@ -45,8 +45,6 @@ const handleCreateHotel = async (req, res) => {
         contentType: item.mimetype,
     }))
 
-    console.log({ ...value, img: images })
-
     try {
         await Hotel.create({ ...value, img: images })
         res.sendStatus(201)

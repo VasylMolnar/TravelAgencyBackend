@@ -30,9 +30,13 @@ const hotelSchema = new Schema({
     //     },
     // ],
 
-    img: {
-        type: String,
-    },
+    img: [
+        {
+            name: { type: String },
+            data: { type: Buffer },
+            contentType: { type: String },
+        },
+    ],
 
     price: {
         type: Number,

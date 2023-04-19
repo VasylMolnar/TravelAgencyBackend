@@ -24,7 +24,6 @@ const handleAllHotels = async (req, res) => {
 
 const handleHotel = async (req, res) => {
     const hotelID = req.params.id
-
     //find and return Hotel
 
     const currentHotel = await Hotel.findById({ _id: hotelID }).exec()

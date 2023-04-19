@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const hotelSchema = new Schema({
-    hotelName: {
+    name: {
         type: String,
         required: true,
     },
@@ -21,14 +21,6 @@ const hotelSchema = new Schema({
         type: String,
         required: true,
     },
-
-    // img: [
-    //     {
-    //         name: { type: String },
-    //         data: { type: Buffer },
-    //         contentType: { type: String },
-    //     },
-    // ],
 
     img: [
         {

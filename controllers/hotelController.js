@@ -6,7 +6,7 @@ const handleAllHotels = async (req, res) => {
     const listOfHotels = (await Hotel.find().exec()).map((item) => {
         return {
             id: item._id,
-            hotelName: item.hotelName,
+            name: item.name,
             country: item.country,
             city: item.city,
             address: item.address,

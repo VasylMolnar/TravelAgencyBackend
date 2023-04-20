@@ -66,17 +66,31 @@ const handleDeleteHotel = async (req, res) => {
 }
 
 const handleUpdateHotel = async (req, res) => {
+    if (!req.params.id && !req?.body) return res.sendStatus(400)
+
     const hotelID = req.params.id
+    const value = JSON.parse(req.body.values)
+    const imageInfo = req.files
 
-    //find and update Hotel by ID
-    const currentHotel = await Hotel.findByIdAndUpdate(
-        { _id: hotelID },
-        req.body
-    )
+    const images = imageInfo.map((item) => ({
+        name: item.originalname,
+        data: item.buffer,
+        contentType: item.mimetype,
+    }))
 
-    if (currentHotel) {
-        res.status(200).json({ message: 'Hotel update successfully' })
-    } else {
+    // find and update Hotel by ID
+    const currentHotel = await Hotel.findById(hotelID).exec()
+
+    try {
+        await currentHotel.updateOne(
+            { ...value, img: images },
+            { ...currentHotel }
+        )
+
+        res.status(200).json({
+            message: 'Hotel update successfully',
+        })
+    } catch (e) {
         res.status(200).json({ message: 'Hotel cant be update' })
     }
 }

@@ -11,7 +11,7 @@ router
 router
     .route('/:id')
     .get(hotelController.handleHotel)
-    .put(hotelController.handleUpdateHotel)
+    .put(upload.array('image'), hotelController.handleUpdateHotel)
     .delete(hotelController.handleDeleteHotel)
 
 module.exports = router

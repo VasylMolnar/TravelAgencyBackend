@@ -49,13 +49,14 @@ app.use('/auth', require('./routers/auth'))
 app.use('/logout', require('./routers/logout'))
 app.use('/refresh', require('./routers/refresh'))
 
+//private and public routes
 app.use('/hotel', require('./routers/hotel'))
-
-app.use('/user', require('./routers/user'))
+app.use('/room', require('./routers/room'))
 
 //private routes
 //verify User Auth by (JWT Access Token)
 app.use(verifyJWT)
+app.use('/user', require('./routers/user'))
 
 //error route
 app.all('*', (req, res) => {

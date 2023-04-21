@@ -1,5 +1,7 @@
 const Hotel = require('../model/Hotel')
 
+//admin and user
+
 const handleAllHotels = async (req, res) => {
     //return all list Hotels
 
@@ -32,6 +34,8 @@ const handleHotel = async (req, res) => {
         ? res.status(200).json(currentHotel)
         : res.status(501).json({ message: 'Hotel not found' })
 }
+
+//admin
 
 const handleCreateHotel = async (req, res) => {
     if (!req?.body) return res.sendStatus(400)

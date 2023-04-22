@@ -10,12 +10,12 @@ const roomSchema = new Schema({
     hotelRooms: [
         {
             roomNumber: {
-                type: String,
+                type: Number,
                 required: true,
             },
 
             roomFloor: {
-                type: String,
+                type: Number,
                 required: true,
             },
 
@@ -29,6 +29,11 @@ const roomSchema = new Schema({
                 required: true,
             },
 
+            description: {
+                type: String,
+                required: true,
+            },
+
             img: [
                 {
                     name: { type: String },
@@ -36,11 +41,6 @@ const roomSchema = new Schema({
                     contentType: { type: String },
                 },
             ],
-
-            description: {
-                type: String,
-                required: true,
-            },
         },
     ],
 })

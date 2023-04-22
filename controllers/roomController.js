@@ -7,26 +7,25 @@ const handleAllRooms = async (req, res) => {
     const { id: hotelId } = req.params
 
     //find All Room collections by Hotel
-    const currentRooms = await Room.findOne({ hotelId: hotelId }).exec()
-    if (!currentRooms) {
-        return res.send([]) //list empty
-    }
+    const currentRooms = (await Room.findOne({ hotelId: hotelId }).exec()) || []
 
-    try {
-        const rooms = currentRooms.hotelRooms.map((item) => {
-            return {
-                id: item._id,
-                roomNumber: item.name,
-                roomFloor: item.country,
-                price: item.city,
-                capacity: item.address,
-                img: item.img,
-                description: item.description,
-            }
-        })
+    if (!currentRooms) {
+        res.status(500).json({ message: 'List is empty' })
+    } else {
+        const rooms =
+            currentRooms?.hotelRooms?.map((item) => {
+                return {
+                    id: item._id,
+                    roomNumber: item.name,
+                    roomFloor: item.country,
+                    price: item.city,
+                    capacity: item.address,
+                    img: item.img,
+                    description: item.description,
+                }
+            }) || []
+
         res.status(200).send(rooms)
-    } catch (e) {
-        res.status(500).json({ message: e })
     }
 }
 
@@ -57,7 +56,7 @@ const handleRoom = async (req, res) => {
 
 const handleCreateRoom = async (req, res) => {
     if (!req?.body || !req.params) return res.sendStatus(400)
-    const value = req.body.hotelRooms
+    const value = JSON.parse(req.body.values)
     const { id: hotelId } = req.params
 
     const imageInfo = req.files
@@ -67,14 +66,14 @@ const handleCreateRoom = async (req, res) => {
         data: item.buffer,
         contentType: item.mimetype,
     }))
+    value.hotelRooms[0].img = images
 
     //find Room collections by Hotel Id
     let roomCollection = await Room.findOne({ hotelId: hotelId }).exec()
 
     if (roomCollection) {
         try {
-            roomCollection.hotelRooms.push(value[0])
-            roomCollection.img = images
+            roomCollection.hotelRooms.push(value.hotelRooms[0])
             await roomCollection.save()
 
             res.sendStatus(201)
@@ -83,7 +82,7 @@ const handleCreateRoom = async (req, res) => {
         }
     } else {
         try {
-            await Room.create({ ...value, img: images })
+            await Room.create({ ...value })
             res.sendStatus(201)
         } catch (e) {
             res.status(500).json(e.message)

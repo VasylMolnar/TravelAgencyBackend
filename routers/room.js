@@ -15,12 +15,12 @@ router
         upload.array('image'),
         roomController.handleCreateRoom
     )
-    .get(roomController.handleAllRoomsByHotelId)
+    .get(roomController.handleAllRooms)
 
 //by Hotel ID + Room ID
 router
     .route('/:id/:id')
-    .get(roomController.handleRoomByHotelId)
+    .get(roomController.handleRoom)
     .put(
         verifyJWT,
         verifyRoles(roles.Admin),

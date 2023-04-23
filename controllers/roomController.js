@@ -3,7 +3,7 @@ const Room = require('../model/Room')
 //admin and user
 
 //by Hotel Id
-const handleAllRoomsByHotelId = async (req, res) => {
+const handleAllRooms = async (req, res) => {
     if (!req.params) return res.sendStatus(400)
     const { id: hotelId } = req.params
 
@@ -30,7 +30,7 @@ const handleAllRoomsByHotelId = async (req, res) => {
     }
 }
 
-const handleRoomByHotelId = async (req, res) => {
+const handleRoom = async (req, res) => {
     if (!req._parsedUrl.path) return res.sendStatus(400)
     const parsedUrl = req._parsedUrl.path
         .split('/')
@@ -119,13 +119,18 @@ const handleDeleteRoom = async (req, res) => {
 
 const handleUpdateRoom = async (req, res) => {
     if (!req?._parsedUrl.path || !req?.body) return res.sendStatus(400)
+    const imageInfo = req.files
     const parsedUrl = req._parsedUrl.path
         .split('/')
         .filter((item) => item !== '')
 
-    const newValue = req.body
+    const newValue = JSON.parse(req.body.values)
 
-    console.log(newValue)
+    const images = imageInfo.map((item) => ({
+        name: item.originalname,
+        data: item.buffer,
+        contentType: item.mimetype,
+    }))
 
     //find Room list by Hotel Id
     let roomList = await Room.findOne({ hotelId: parsedUrl[0] }).exec()
@@ -137,7 +142,7 @@ const handleUpdateRoom = async (req, res) => {
 
         roomList.hotelRooms = roomList.hotelRooms.map((room) => {
             return room._id.toString() === parsedUrl[1]
-                ? { ...room, ...newValue }
+                ? { ...room, ...newValue, img: images }
                 : room
         })
 
@@ -151,11 +156,11 @@ const handleUpdateRoom = async (req, res) => {
 }
 
 module.exports = {
-    handleRoomByHotelId,
+    handleRoom,
     handleCreateRoom,
     handleDeleteRoom,
     handleUpdateRoom,
-    handleAllRoomsByHotelId,
+    handleAllRooms,
 }
 
-//booking room and multer
+//booking room

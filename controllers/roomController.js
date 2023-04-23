@@ -2,7 +2,8 @@ const Room = require('../model/Room')
 
 //admin and user
 
-const handleAllRooms = async (req, res) => {
+//by Hotel Id
+const handleAllRoomsByHotelId = async (req, res) => {
     if (!req.params) return res.sendStatus(400)
     const { id: hotelId } = req.params
 
@@ -16,10 +17,10 @@ const handleAllRooms = async (req, res) => {
             currentRooms?.hotelRooms?.map((item) => {
                 return {
                     id: item._id,
-                    roomNumber: item.name,
-                    roomFloor: item.country,
-                    price: item.city,
-                    capacity: item.address,
+                    roomNumber: item.roomNumber,
+                    roomFloor: item.roomFloor,
+                    price: item.price,
+                    capacity: item.capacity,
                     img: item.img,
                     description: item.description,
                 }
@@ -29,7 +30,7 @@ const handleAllRooms = async (req, res) => {
     }
 }
 
-const handleRoom = async (req, res) => {
+const handleRoomByHotelId = async (req, res) => {
     if (!req._parsedUrl.path) return res.sendStatus(400)
     const parsedUrl = req._parsedUrl.path
         .split('/')
@@ -53,7 +54,7 @@ const handleRoom = async (req, res) => {
 }
 
 //admin
-
+//by Hotel Id
 const handleCreateRoom = async (req, res) => {
     if (!req?.body || !req.params) return res.sendStatus(400)
     const value = JSON.parse(req.body.values)
@@ -150,11 +151,11 @@ const handleUpdateRoom = async (req, res) => {
 }
 
 module.exports = {
-    handleAllRooms,
-    handleRoom,
+    handleRoomByHotelId,
     handleCreateRoom,
     handleDeleteRoom,
     handleUpdateRoom,
+    handleAllRoomsByHotelId,
 }
 
 //booking room and multer

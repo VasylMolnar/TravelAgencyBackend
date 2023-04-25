@@ -47,6 +47,7 @@ const roomSchema = new Schema({
                     userID: { type: String },
                     dataEnd: { type: String },
                     dataOff: { type: String },
+                    finalPrice: { type: Number },
                 },
             ],
         },

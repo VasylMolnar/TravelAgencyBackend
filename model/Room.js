@@ -41,6 +41,14 @@ const roomSchema = new Schema({
                     contentType: { type: String },
                 },
             ],
+
+            bookingData: [
+                {
+                    userID: { type: String },
+                    dataEnd: { type: String },
+                    dataOff: { type: String },
+                },
+            ],
         },
     ],
 })

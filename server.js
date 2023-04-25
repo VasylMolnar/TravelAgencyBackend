@@ -49,6 +49,8 @@ app.use('/auth', require('./routers/auth'))
 app.use('/logout', require('./routers/logout'))
 app.use('/refresh', require('./routers/refresh'))
 
+app.use('/booking', require('./routers/booking'))
+
 //private and public routes
 app.use('/hotel', require('./routers/hotel'))
 app.use('/room', require('./routers/room'))

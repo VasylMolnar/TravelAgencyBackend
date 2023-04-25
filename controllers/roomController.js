@@ -162,5 +162,3 @@ module.exports = {
     handleUpdateRoom,
     handleAllRooms,
 }
-
-//booking room

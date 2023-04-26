@@ -86,7 +86,7 @@ const handleCreateBooking = async (req, res) => {
 
     const value = req.body
 
-    console.log(value)
+    // console.log(value)
 
     //find Room  by Hotel Id
     let roomList = await Room.findOne({ hotelId: parsedUrl[0] }).exec()

@@ -1,4 +1,5 @@
 const Room = require('../model/Room')
+const User = require('../model/User')
 // hotelRoomList == roomList
 
 //admin and user
@@ -45,36 +46,68 @@ const handleAllBookingByRoom = async (req, res) => {
     }
 }
 
+//select all booking by User
 const handleBooking = async (req, res) => {
-    if (!req?._parsedUrl.path || !req?.body) return res.sendStatus(400)
+    if (!req?.params) return res.sendStatus(400)
+    const userID = req.params.id
 
-    const parsedUrl = req._parsedUrl.path
-        .split('/')
-        .filter((item) => item !== '')
+    //find current user
+    const currentUser = await User.findById({
+        _id: userID,
+    }).exec()
 
-    //find Room  by Hotel Id
-    let hotelRoomList = await Room.findOne({ hotelId: parsedUrl[0] }).exec()
+    if (!currentUser) return res.status(401).json({ message: 'Not found' })
 
-    if (!hotelRoomList) {
-        res.status(404).json({ message: 'Rooms list not found' })
-    } else {
-        //find Current Booking  by Room Id
-        const currentBooking = []
+    //find booking Hotel
+    const bookingHotel = currentUser.bookingHotel
+    const currentBooking = []
 
-        for (const room of hotelRoomList.hotelRooms) {
-            if (room._id.toString() === parsedUrl[1]) {
+    for (const hotelItem of bookingHotel) {
+        const hotelId = hotelItem.hotelId
+
+        const hotelRoomList = await Room.findOne({
+            hotelId,
+        }).exec()
+
+        let prevRoomId = ''
+
+        for (const roomItem of hotelItem.roomIds) {
+            const roomId = roomItem.roomId
+            const cardId = roomItem._id
+
+            if (prevRoomId === roomId) {
+                continue
+            }
+
+            const currentRoom = hotelRoomList.hotelRooms.find(
+                (item) => item._id.toString() === roomId
+            )
+
+            const userParams = { hotelId: hotelId, roomId: roomId, cardId }
+
+            if (currentRoom) {
                 currentBooking.push(
-                    room.bookingData.find(
-                        (booking) => booking._id.toString() === parsedUrl[2]
-                    )
+                    ...currentRoom.bookingData
+                        .filter(
+                            (booking) => booking.userID.toString() === userID
+                        )
+                        .map((booking) => {
+                            return {
+                                booking,
+                                ...userParams,
+                            }
+                        })
                 )
             }
+            prevRoomId = roomId
         }
-
-        currentBooking
-            ? res.status(200).send(currentBooking)
-            : res.status(404).json({ message: 'Room not found' })
     }
+
+    // console.log(currentBooking)
+
+    currentBooking
+        ? res.status(200).send(currentBooking)
+        : res.status(404).json({ message: 'List Empty' })
 }
 
 const handleCreateBooking = async (req, res) => {
@@ -164,12 +197,21 @@ const handleUpdateBooking = async (req, res) => {
 const handleDeleteBooking = async (req, res) => {
     if (!req?._parsedUrl.path || !req?.body) return res.sendStatus(400)
 
+    //find current user
+    const userID = req.body.userID
+
+    //in find current user delete Booking by cardID
+    const cardID = req.body.cardID
+
     const parsedUrl = req._parsedUrl.path
         .split('/')
         .filter((item) => item !== '')
 
     //find Room  by Hotel Id
     let roomList = await Room.findOne({ hotelId: parsedUrl[0] }).exec()
+
+    //find User by User Id
+    let currentUser = await User.findOne({ _id: userID }).exec()
 
     if (!roomList) {
         res.status(404).json({ message: 'Rooms list not found' })
@@ -188,10 +230,24 @@ const handleDeleteBooking = async (req, res) => {
                 return room
             }
         })
+
+        currentUser.bookingHotel.map((item) => {
+            if (item.hotelId === parsedUrl[0]) {
+                item.roomIds = item.roomIds.filter((booking) => {
+                    console.log('booking', booking)
+                    console.log('cardID', cardID)
+                    return booking._id.toString() !== cardID
+                })
+            }
+
+            return item
+        })
     }
 
+    console.log(currentUser.bookingHotel[0])
     try {
         await roomList.save()
+        await currentUser.save()
         res.status(200).json({ message: 'Booking Delete successfully' })
     } catch (e) {
         res.status(404).json({ message: 'Booking cannot be Delete' })

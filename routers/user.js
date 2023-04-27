@@ -18,6 +18,10 @@ const upload = multer()
 router.get('/', verifyRoles(roles.Admin), userController.handleAllUsers)
 
 router
+    .route('/:id/booking')
+    .put(verifyRoles(roles.User), userController.handleBooking)
+
+router
     .route('/:id')
     .get(verifyRoles(roles.Admin, roles.User), userController.handleUserById)
     .delete(verifyRoles(roles.Admin, roles.User), userController.handleDelete)

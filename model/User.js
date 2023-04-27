@@ -33,7 +33,17 @@ const userSchema = new Schema({
     },
     galleryID: String,
     refreshToken: String,
-    hotelsID: {},
+    bookingHotel: [
+        {
+            hotelId: { type: String },
+
+            roomIds: [
+                {
+                    roomId: { type: String },
+                },
+            ],
+        },
+    ],
 })
 
 module.exports = mongoose.model('User', userSchema)

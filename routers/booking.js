@@ -4,11 +4,14 @@ const verifyRoles = require('../middleware/verifyRoles')
 const roles = require('../config/roles_list')
 
 //Hotel Id
-router.get(
-    '/:id',
-    verifyRoles(roles.Admin),
-    bookingController.handleAllBookingByHotel
-)
+// router.get(
+//     '/:id',
+//     verifyRoles(roles.Admin),
+//     bookingController.handleAllBookingByHotel
+// )
+
+// User Id
+router.get('/:id', bookingController.handleBooking)
 
 //Hotel Id + Room Id
 router
@@ -25,7 +28,7 @@ router
 //Hotel Id + Room Id + Booking Id
 router
     .route('/:id/:id/:id')
-    .get(verifyRoles(roles.Admin, roles.User), bookingController.handleBooking)
+    // .get(verifyRoles(roles.Admin, roles.User), bookingController.handleBooking)
     .put(
         verifyRoles(roles.Admin, roles.User),
         bookingController.handleUpdateBooking

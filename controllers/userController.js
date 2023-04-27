@@ -67,11 +67,20 @@ const handleUserById = async (req, res) => {
         _id: userID,
     }).exec()
 
-    const { id, username, email, date, avatar, password } = currentUser
+    const { id, username, email, date, avatar, password, bookingHotel } =
+        currentUser
 
     !currentUser
         ? res.status(501).json({ message: 'User not found' })
-        : res.status(200).json({ id, username, email, date, avatar, password })
+        : res.status(200).json({
+              id,
+              username,
+              email,
+              date,
+              avatar,
+              password,
+              bookingHotel,
+          })
 }
 
 const handleAllUsers = async (req, res) => {
@@ -123,10 +132,48 @@ const handleUploadImg = async (req, res) => {
     }
 }
 
+const handleBooking = async (req, res) => {
+    const userID = req.params.id
+    const { hotelId, roomId } = req.body
+
+    //find and Get user by Id in DB
+    const currentUser = await User.findById({
+        _id: userID,
+    }).exec()
+
+    if (!currentUser) return res.status(401).json({ message: 'Not found' })
+
+    //find duplicate Hotel
+    const duplicateHotel = currentUser.bookingHotel.find(
+        (item) => item.hotelId === hotelId
+    )
+
+    //save update data to User
+    if (duplicateHotel) {
+        duplicateHotel.roomIds.push({ roomId })
+    } else {
+        currentUser.bookingHotel.push({ hotelId, roomIds: [{ roomId }] })
+    }
+
+    try {
+        console.log(currentUser.bookingHotel)
+        currentUser.save()
+
+        res.status(200).json({
+            message: 'User successfully update',
+        })
+    } catch (e) {
+        res.status(501).json({ message: 'User cant be update' })
+    }
+}
+
 module.exports = {
     handleDelete,
     handleUpdate,
     handleAllUsers,
     handleUserById,
     handleUploadImg,
+    handleBooking,
 }
+
+// update and delete

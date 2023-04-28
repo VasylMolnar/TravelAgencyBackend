@@ -65,6 +65,7 @@ const handleBooking = async (req, res) => {
     for (const hotelItem of bookingHotel) {
         const hotelId = hotelItem.hotelId
 
+        //select Room by Hotel Id
         const hotelRoomList = await Room.findOne({
             hotelId,
         }).exec()
@@ -151,11 +152,12 @@ const handleCreateBooking = async (req, res) => {
 const handleUpdateBooking = async (req, res) => {
     if (!req?._parsedUrl.path || !req?.body) return res.sendStatus(400)
 
+    //new update values
+    const newValue = req.body.newValue
+
     const parsedUrl = req._parsedUrl.path
         .split('/')
         .filter((item) => item !== '')
-
-    const value = req.body
 
     //find Room  by Hotel Id
     let roomList = await Room.findOne({ hotelId: parsedUrl[0] }).exec()
@@ -163,34 +165,29 @@ const handleUpdateBooking = async (req, res) => {
     if (!roomList) {
         res.status(404).json({ message: 'Rooms list not found' })
     } else {
-        //find Current Room  by Room Id and update Booking by id
+        //find Current Room  by Room Id and delete Booking by id
 
         roomList.hotelRooms = roomList.hotelRooms.map((room) => {
             if (room._id.toString() === parsedUrl[1]) {
                 return {
                     ...room,
                     bookingData: room.bookingData.map((booking) => {
-                        if (booking._id.toString() === parsedUrl[2]) {
-                            return {
-                                ...booking,
-                                ...value,
-                            }
-                        } else {
-                            return booking
-                        }
+                        return booking._id.toString() === parsedUrl[2]
+                            ? { ...booking, ...newValue }
+                            : booking
                     }),
                 }
-            } else {
-                return room
             }
+            return room
         })
+    }
 
-        try {
-            await roomList.save()
-            res.status(200).json({ message: 'Booking successfully' })
-        } catch (e) {
-            res.status(404).json({ message: 'Booking not successfully' })
-        }
+    // console.log(roomList.hotelRooms[0])
+    try {
+        await roomList.save()
+        res.status(200).json({ message: 'Booking Update successfully' })
+    } catch (e) {
+        res.status(404).json({ message: 'Booking cannot be Update' })
     }
 }
 
@@ -198,10 +195,10 @@ const handleDeleteBooking = async (req, res) => {
     if (!req?._parsedUrl.path || !req?.body) return res.sendStatus(400)
 
     //find current user
-    const userID = req.body.userID
+    const userID = req?.body?.userID
 
     //in find current user delete Booking by cardID
-    const cardID = req.body.cardID
+    const bookingIdUser = req?.body?.bookingIdUser
 
     const parsedUrl = req._parsedUrl.path
         .split('/')
@@ -231,26 +228,28 @@ const handleDeleteBooking = async (req, res) => {
             }
         })
 
-        currentUser.bookingHotel.map((item) => {
-            if (item.hotelId === parsedUrl[0]) {
-                item.roomIds = item.roomIds.filter((booking) => {
-                    console.log('booking', booking)
-                    console.log('cardID', cardID)
-                    return booking._id.toString() !== cardID
-                })
-            }
+        if (userID) {
+            currentUser.bookingHotel.map((item) => {
+                if (item.hotelId === parsedUrl[0]) {
+                    item.roomIds = item.roomIds.filter((booking) => {
+                        return booking._id.toString() !== bookingIdUser
+                    })
+                }
 
-            return item
-        })
+                return item
+            })
+        }
     }
 
-    console.log(currentUser.bookingHotel[0])
+    // console.log(currentUser.bookingHotel[0])
     try {
         await roomList.save()
-        await currentUser.save()
+        if (userID) {
+            await currentUser.save()
+        }
         res.status(200).json({ message: 'Booking Delete successfully' })
     } catch (e) {
-        res.status(404).json({ message: 'Booking cannot be Delete' })
+        res.status(501).json({ message: 'Booking cannot be Delete' })
     }
 }
 

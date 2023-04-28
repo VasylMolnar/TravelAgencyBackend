@@ -31,7 +31,6 @@ const userSchema = new Schema({
         data: { type: Buffer },
         contentType: { type: String },
     },
-    galleryID: String,
     refreshToken: String,
     bookingHotel: [
         {

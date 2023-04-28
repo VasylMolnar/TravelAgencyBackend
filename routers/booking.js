@@ -28,7 +28,6 @@ router
 //Hotel Id + Room Id + Booking Id
 router
     .route('/:id/:id/:id')
-    // .get(verifyRoles(roles.Admin, roles.User), bookingController.handleBooking)
     .put(
         verifyRoles(roles.Admin, roles.User),
         bookingController.handleUpdateBooking

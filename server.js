@@ -54,6 +54,7 @@ app.use('/booking', require('./routers/booking'))
 //private and public routes
 app.use('/hotel', require('./routers/hotel'))
 app.use('/room', require('./routers/room'))
+app.use('/gallery', require('./routers/gallery'))
 
 //private routes
 //verify User Auth by (JWT Access Token)

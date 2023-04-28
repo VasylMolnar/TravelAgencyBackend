@@ -156,7 +156,7 @@ const handleBooking = async (req, res) => {
     }
 
     try {
-        console.log(currentUser.bookingHotel)
+        //console.log(currentUser.bookingHotel)
         currentUser.save()
 
         res.status(200).json({
@@ -175,5 +175,3 @@ module.exports = {
     handleUploadImg,
     handleBooking,
 }
-
-// update and delete

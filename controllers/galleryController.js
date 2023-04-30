@@ -34,6 +34,7 @@ const handleCreate = async (req, res) => {
         name: item.originalname,
         data: item.buffer,
         contentType: item.mimetype,
+        title: value.title,
     }))
 
     try {
@@ -44,9 +45,62 @@ const handleCreate = async (req, res) => {
     }
 }
 
-const handleUpdate = (req, res) => {}
+const handleUpdate = async (req, res) => {
+    if (!req._parsedUrl.path && req.body) return res.sendStatus(400)
 
-const handleDelete = (req, res) => {}
+    const newReactions = req.body.newReactions
+    console.log('', newReactions)
+
+    const parsedUrl = req._parsedUrl.path
+        .split('/')
+        .filter((item) => item !== '')
+
+    //find Current Gallery List by User ID
+    const currentList = await Gallery.findOne({ userID: parsedUrl[0] })
+
+    if (!currentList) {
+        res.status(404).json({ message: 'IMG list not found' })
+    } else {
+        currentList.img = currentList.img.map((item) => {
+            return item._id.toString() === parsedUrl[1]
+                ? { ...item, reactions: { ...newReactions } }
+                : item
+        })
+
+        try {
+            await currentList.save()
+            res.status(200).json({ message: 'IMG update successfully' })
+        } catch (e) {
+            res.status(404).json({ message: 'IMG cant be update ' })
+        }
+    }
+}
+
+const handleDelete = async (req, res) => {
+    if (!req._parsedUrl.path) return res.sendStatus(400)
+
+    const parsedUrl = req._parsedUrl.path
+        .split('/')
+        .filter((item) => item !== '')
+
+    //find Current Gallery List by User ID
+    const currentList = await Gallery.findOne({ userID: parsedUrl[0] })
+
+    if (!currentList) {
+        res.status(404).json({ message: 'IMG list not found' })
+    } else {
+        currentList.img = currentList.img.filter(
+            (item) => item._id.toString() !== parsedUrl[1]
+        )
+
+        try {
+            await currentList.save()
+            res.status(200).json({ message: 'IMG deleted successfully' })
+        } catch (e) {
+            res.status(404).json({ message: 'IMG cant be deleted ' })
+        }
+    }
+}
 
 module.exports = {
     handleAllGallery,

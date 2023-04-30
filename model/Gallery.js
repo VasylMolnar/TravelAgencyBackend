@@ -14,6 +14,7 @@ const gallerySchema = new Schema({
 
     img: [
         {
+            title: { type: String },
             name: { type: String },
             data: { type: Buffer },
             contentType: { type: String },

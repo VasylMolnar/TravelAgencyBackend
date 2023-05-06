@@ -49,17 +49,19 @@ app.use('/auth', require('./routers/auth'))
 app.use('/logout', require('./routers/logout'))
 app.use('/refresh', require('./routers/refresh'))
 
-app.use('/booking', require('./routers/booking'))
-
 //private and public routes
 app.use('/hotel', require('./routers/hotel'))
 app.use('/room', require('./routers/room'))
 app.use('/gallery', require('./routers/gallery'))
+app.use('/airline', require('./routers/airline'))
+app.use('/aircraft', require('./routers/aircraft'))
 
 //private routes
 //verify User Auth by (JWT Access Token)
 app.use(verifyJWT)
 app.use('/user', require('./routers/user'))
+
+app.use('/booking', require('./routers/booking'))
 
 //error route
 app.all('*', (req, res) => {

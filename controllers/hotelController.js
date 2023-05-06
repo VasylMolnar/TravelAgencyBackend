@@ -59,7 +59,7 @@ const handleCreateHotel = async (req, res) => {
 const handleDeleteHotel = async (req, res) => {
     const hotelID = req.params.id
 
-    //find and delete user in DB by userID
+    //find and delete Hotel in DB by userID
     const currentHotel = await Hotel.findByIdAndDelete({ _id: hotelID })
 
     if (!currentHotel) {

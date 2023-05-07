@@ -4,23 +4,22 @@ const AirCraft = require('../model/AirCraft')
 //by AirLIne Id
 const handleAllAirCraft = async (req, res) => {
     if (!req.params) return res.sendStatus(400)
-    const { id: hotelId } = req.params
+    const { id: airLineId } = req.params
 
-    //find All Room collections by Hotel
+    //find All AirCraft by AirLine ID
     const currentRooms =
-        (await AirCraft.findOne({ hotelId: hotelId }).exec()) || []
+        (await AirCraft.findOne({ airLineId: airLineId }).exec()) || []
 
     if (!currentRooms) {
         res.status(500).json({ message: 'List is empty' })
     } else {
         const rooms =
-            currentRooms?.hotelRooms?.map((item) => {
+            currentRooms?.airLinePlane?.map((item) => {
                 return {
                     id: item._id,
-                    roomNumber: item.roomNumber,
-                    roomFloor: item.roomFloor,
+                    departure: item.departure,
+                    arrival: item.arrival,
                     price: item.price,
-                    capacity: item.capacity,
                     img: item.img,
                     description: item.description,
                 }
@@ -37,19 +36,21 @@ const handleAirCraft = async (req, res) => {
         .filter((item) => item !== '')
 
     //find Room list by Hotel Id
-    const roomList = await AirCraft.findOne({ hotelId: parsedUrl[0] }).exec()
+    const airLineList = await AirCraft.findOne({
+        airLineId: parsedUrl[0],
+    }).exec()
 
-    if (!roomList) {
-        res.status(404).json({ message: 'Rooms list not found' })
+    if (!airLineList) {
+        res.status(404).json({ message: 'AirLine list not found' })
     } else {
         //find Current Room  by Room Id
-        const currentRoom = roomList.hotelRooms.find(
-            (room) => room._id.toString() === parsedUrl[1]
+        const currentAirCraft = airLineList.airLinePlane.find(
+            (airCraft) => airCraft._id.toString() === parsedUrl[1]
         )
 
-        currentRoom
-            ? res.status(200).send(currentRoom)
-            : res.status(404).json({ message: 'Room not found' })
+        currentAirCraft
+            ? res.status(200).send(currentAirCraft)
+            : res.status(404).json({ message: 'AirLine not found' })
     }
 }
 
@@ -58,7 +59,7 @@ const handleAirCraft = async (req, res) => {
 const handleCreateAirCraft = async (req, res) => {
     if (!req?.body || !req.params) return res.sendStatus(400)
     const value = JSON.parse(req.body.values)
-    const { id: hotelId } = req.params
+    const { id: airLineId } = req.params
 
     const imageInfo = req.files
 
@@ -67,15 +68,17 @@ const handleCreateAirCraft = async (req, res) => {
         data: item.buffer,
         contentType: item.mimetype,
     }))
-    value.hotelRooms[0].img = images
+    value.airLinePlane[0].img = images
 
     //find Room collections by Hotel Id
-    let roomCollection = await AirCraft.findOne({ hotelId: hotelId }).exec()
+    let airLineCollection = await AirCraft.findOne({
+        airLineId: airLineId,
+    }).exec()
 
-    if (roomCollection) {
+    if (airLineCollection) {
         try {
-            roomCollection.hotelRooms.push(value.hotelRooms[0])
-            await roomCollection.save()
+            airLineCollection.airLinePlane.push(value.airLinePlane[0])
+            await airLineCollection.save()
 
             res.sendStatus(201)
         } catch (e) {
@@ -83,7 +86,7 @@ const handleCreateAirCraft = async (req, res) => {
         }
     } else {
         try {
-            await Room.create({ ...value })
+            await AirCraft.create({ ...value })
             res.sendStatus(201)
         } catch (e) {
             res.status(500).json(e.message)
@@ -98,21 +101,23 @@ const handleDeleteAirCraft = async (req, res) => {
         .filter((item) => item !== '')
 
     //find Room list by Hotel Id
-    let roomList = await AirCraft.findOne({ hotelId: parsedUrl[0] }).exec()
+    let airLineList = await AirCraft.findOne({
+        airLineId: parsedUrl[0],
+    }).exec()
 
-    if (!roomList) {
-        res.status(404).json({ message: 'Rooms list not found' })
+    if (!airLineList) {
+        res.status(404).json({ message: 'AirCraft list not found' })
     } else {
-        //find Current Room  by Room Id and delete
-        roomList.hotelRooms = roomList.hotelRooms.filter(
-            (room) => room._id.toString() !== parsedUrl[1]
+        //find Current airCraft by airCraft Id and delete
+        airLineList.airLinePlane = airLineList.airLinePlane.filter(
+            (airCraft) => airCraft._id.toString() !== parsedUrl[1]
         )
 
         try {
-            await roomList.save()
-            res.status(200).json({ message: 'Room deleted successfully' })
+            await airLineList.save()
+            res.status(200).json({ message: 'AirCraft deleted successfully' })
         } catch (e) {
-            res.status(404).json({ message: 'Room cant be deleted ' })
+            res.status(404).json({ message: 'AirCraft cant be deleted ' })
         }
     }
 }
@@ -133,24 +138,24 @@ const handleUpdateAirCraft = async (req, res) => {
     }))
 
     //find Room list by Hotel Id
-    let roomList = await AirCraft.findOne({ hotelId: parsedUrl[0] }).exec()
+    let airLineList = await AirCraft.findOne({ airLineId: parsedUrl[0] }).exec()
 
-    if (!roomList) {
-        res.status(404).json({ message: 'Rooms list not found' })
+    if (!airLineList) {
+        res.status(404).json({ message: 'AirLine list not found' })
     } else {
         //find Current Room  by Room Id and update
 
-        roomList.hotelRooms = roomList.hotelRooms.map((room) => {
-            return room._id.toString() === parsedUrl[1]
-                ? { ...room, ...newValue, img: images }
-                : room
+        airLineList.airLinePlane = airLineList.airLinePlane.map((airCraft) => {
+            return airCraft._id.toString() === parsedUrl[1]
+                ? { ...airCraft, ...newValue, img: images }
+                : airCraft
         })
 
         try {
-            await roomList.save()
-            res.status(200).json({ message: 'Room update successfully' })
+            await airLineList.save()
+            res.status(200).json({ message: 'AirCraft update successfully' })
         } catch (e) {
-            res.status(404).json({ message: 'Room cant be update ' })
+            res.status(404).json({ message: 'AirCraft cant be update ' })
         }
     }
 }

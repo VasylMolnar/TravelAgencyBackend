@@ -7,7 +7,7 @@ const handleAllAirLines = async (req, res) => {
     const listOfAirLines = (await AirLine.find().exec()).map((item) => {
         return {
             id: item._id,
-            name: item.name,
+            nameAirLine: item.nameAirLine,
             country: item.country,
             city: item.city,
             address: item.address,
@@ -38,7 +38,7 @@ const handleCreateAirLine = async (req, res) => {
     const value = JSON.parse(req.body.values)
     const imageInfo = req.files
 
-    console.log(imageInfo)
+    // console.log(imageInfo)
     const images = imageInfo.map((item) => ({
         name: item.originalname,
         data: item.buffer,

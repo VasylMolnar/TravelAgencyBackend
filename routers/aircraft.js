@@ -1,37 +1,36 @@
 const router = require('express').Router()
-const roomController = require('../controllers/roomController')
+const airCraftController = require('../controllers/airCraftController')
 const verifyJWT = require('../middleware/verifyJWT')
 const verifyRoles = require('../middleware/verifyRoles')
 const roles = require('../config/roles_list')
 const multer = require('multer')
 const upload = multer()
 
-//by Hotel Id
+//by AirLine Id
 router
     .route('/:id')
     .post(
         verifyJWT,
         verifyRoles(roles.Admin),
         upload.array('image'),
-        roomController.handleCreateRoom
+        airCraftController.handleCreateAirCraft
     )
-    .get(roomController.handleAllRooms)
+    .get(airCraftController.handleAllAirCraft)
 
-//by Hotel ID + Room ID
+//by AirLine ID + AirCraft ID
 router
     .route('/:id/:id')
-    .get(roomController.handleRoom)
+    .get(airCraftController.handleAirCraft)
     .put(
         verifyJWT,
         verifyRoles(roles.Admin),
         upload.array('image'),
-        roomController.handleUpdateRoom
+        airCraftController.handleUpdateAirCraft
     )
     .delete(
         verifyJWT,
         verifyRoles(roles.Admin),
-        roomController.handleDeleteRoom
+        airCraftController.handleDeleteAirCraft
     )
 
 module.exports = router
-9

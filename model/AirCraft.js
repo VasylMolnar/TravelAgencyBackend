@@ -1,30 +1,25 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const roomSchema = new Schema({
-    hotelId: {
+const airCraftSchema = new Schema({
+    airLineId: {
         type: String,
         required: true,
     },
 
-    hotelRooms: [
+    airLinePlane: [
         {
-            roomNumber: {
-                type: Number,
+            departure: {
+                type: String,
                 required: true,
             },
 
-            roomFloor: {
-                type: Number,
+            arrival: {
+                type: String,
                 required: true,
             },
 
             price: {
-                type: Number,
-                required: true,
-            },
-
-            capacity: {
                 type: Number,
                 required: true,
             },
@@ -46,7 +41,6 @@ const roomSchema = new Schema({
                 {
                     userID: { type: String },
                     dataEnd: { type: String },
-                    dataOff: { type: String },
                     finalPrice: { type: Number },
                 },
             ],
@@ -54,4 +48,4 @@ const roomSchema = new Schema({
     ],
 })
 
-module.exports = mongoose.model('Room', roomSchema)
+module.exports = mongoose.model('AirCraft', airCraftSchema)

@@ -1,5 +1,7 @@
 const User = require('../model/User')
-const AirCraft = require('../model/User')
+const AirCraft = require('../model/AirCraft')
+
+//select all booking by User see in bookingController
 
 //admin and user
 const handleAllBookingByAirLine = async (req, res) => {
@@ -30,6 +32,8 @@ const handleAllBookingByAirCraft = async (req, res) => {
         .split('/')
         .filter((item) => item !== '')
 
+    console.log(parsedUrl)
+
     //find AirCraft  by AirLine Id
     let airLineList = await AirCraft.findOne({
         airLineId: parsedUrl[0],
@@ -49,75 +53,6 @@ const handleAllBookingByAirCraft = async (req, res) => {
     }
 }
 
-//select all booking by User
-const handleBooking = async (req, res) => {
-    if (!req?.params) return res.sendStatus(400)
-    const userID = req.params.id
-
-    //find current user
-    const currentUser = await User.findById({
-        _id: userID,
-    }).exec()
-
-    if (!currentUser) return res.status(401).json({ message: 'Not found' })
-
-    //find booking AirLine
-    const bookingAirLine = currentUser.bookingAirLine
-    const currentBooking = []
-
-    for (const airLineItem of bookingAirLine) {
-        const airLineId = airLineItem.airLineId
-
-        //select AirCraft by AirLine Id
-        const airLineList = await AirCraft.findOne({
-            airLineId,
-        }).exec()
-
-        let prevRoomId = ''
-
-        for (const airCraftItem of airLineItem.airCraftIds) {
-            const airCraftId = airCraftItem.airCraftId
-            const cardId = airCraftItem._id
-
-            if (prevRoomId === airCraftId) {
-                continue
-            }
-
-            const currentAirCraft = airLineList.airLinePlane.find(
-                (item) => item._id.toString() === airCraftId
-            )
-
-            const userParams = {
-                airLineId: airLineId,
-                airCraftId: airCraftId,
-                cardId,
-            }
-
-            if (currentAirCraft) {
-                currentBooking.push(
-                    ...currentAirCraft.bookingData
-                        .filter(
-                            (booking) => booking.userID.toString() === userID
-                        )
-                        .map((booking) => {
-                            return {
-                                booking,
-                                ...userParams,
-                            }
-                        })
-                )
-            }
-            prevRoomId = roomId
-        }
-    }
-
-    // console.log(currentBooking)
-
-    currentBooking
-        ? res.status(200).send(currentBooking)
-        : res.status(404).json({ message: 'List Empty' })
-}
-
 const handleCreateBooking = async (req, res) => {
     if (!req?._parsedUrl.path || !req?.body) return res.sendStatus(400)
 
@@ -126,6 +61,8 @@ const handleCreateBooking = async (req, res) => {
         .filter((item) => item !== '')
 
     const value = req.body
+
+    console.log(value)
 
     //find AirCraft  by AirLine Id
     let airLineList = await AirCraft.findOne({ airLineId: parsedUrl[0] }).exec()
@@ -168,7 +105,7 @@ const handleUpdateBooking = async (req, res) => {
     let airLineList = await AirCraft.findOne({ airLineId: parsedUrl[0] }).exec()
 
     if (!airLineList) {
-        res.status(404).json({ message: 'AirCruft list not found' })
+        res.status(404).json({ message: 'AirCraft list not found' })
     } else {
         //find Current AirCruft  by AirCruft Id and delete Booking by id
 
@@ -211,7 +148,7 @@ const handleDeleteBooking = async (req, res) => {
 
     //find AirCraft  by AirLine Id
     let airLineList = await AirCraft.findOne({
-        airCraftId: parsedUrl[0],
+        airLineId: parsedUrl[0],
     }).exec()
 
     //find User by User Id
@@ -237,7 +174,7 @@ const handleDeleteBooking = async (req, res) => {
 
         if (userID) {
             currentUser.bookingAirLine.map((item) => {
-                if (item.airLine === parsedUrl[0]) {
+                if (item.airLineId === parsedUrl[0]) {
                     item.airCraftIds = item.airCraftIds.filter((booking) => {
                         return booking._id.toString() !== bookingIdUser
                     })
@@ -261,7 +198,6 @@ const handleDeleteBooking = async (req, res) => {
 }
 
 module.exports = {
-    handleBooking,
     handleAllBookingByAirCraft,
     handleAllBookingByAirLine,
     handleCreateBooking,

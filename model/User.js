@@ -43,6 +43,18 @@ const userSchema = new Schema({
             ],
         },
     ],
+
+    bookingAirLine: [
+        {
+            airLineId: { type: String },
+
+            airCraftIds: [
+                {
+                    airCraftId: { type: String },
+                },
+            ],
+        },
+    ],
 })
 
 module.exports = mongoose.model('User', userSchema)

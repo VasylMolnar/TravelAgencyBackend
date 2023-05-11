@@ -1,5 +1,6 @@
 const Room = require('../model/Room')
 const User = require('../model/User')
+const AirCraft = require('../model/AirCraft')
 // hotelRoomList == roomList
 
 //admin and user
@@ -46,7 +47,7 @@ const handleAllBookingByRoom = async (req, res) => {
     }
 }
 
-//select all booking by User
+//select all booking by User ID
 const handleBooking = async (req, res) => {
     if (!req?.params) return res.sendStatus(400)
     const userID = req.params.id
@@ -104,10 +105,58 @@ const handleBooking = async (req, res) => {
         }
     }
 
-    // console.log(currentBooking)
+    //find booking Plane
+    const bookingPlane = currentUser.bookingAirLine
+    const currentBookingPlane = []
 
-    currentBooking
-        ? res.status(200).send(currentBooking)
+    for (const airLineItem of bookingPlane) {
+        const airLineId = airLineItem.airLineId
+
+        //select AirCraft by AirLine Id
+        const airLinePlaneList = await AirCraft.findOne({
+            airLineId,
+        }).exec()
+
+        let prevRoomId = ''
+
+        for (const airCraftItem of airLineItem.airCraftIds) {
+            const airCraftId = airCraftItem.airCraftId
+            const cardId = airCraftItem._id
+
+            if (prevRoomId === airCraftId) {
+                continue
+            }
+
+            const currentAirCraft = airLinePlaneList.airLinePlane.find(
+                (item) => item._id.toString() === airCraftId
+            )
+
+            const userParams = {
+                airLineId: airLineId,
+                airCraftId: airCraftId,
+                cardId,
+            }
+
+            if (currentAirCraft) {
+                currentBookingPlane.push(
+                    ...currentAirCraft.bookingData
+                        .filter(
+                            (booking) => booking.userID.toString() === userID
+                        )
+                        .map((booking) => {
+                            return {
+                                booking,
+                                ...userParams,
+                            }
+                        })
+                )
+            }
+            prevRoomId = airCraftId
+        }
+    }
+
+    currentBooking || currentBookingPlane
+        ? res.status(200).send([currentBooking, currentBookingPlane])
         : res.status(404).json({ message: 'List Empty' })
 }
 

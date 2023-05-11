@@ -60,8 +60,11 @@ app.use('/aircraft', require('./routers/aircraft'))
 //verify User Auth by (JWT Access Token)
 app.use(verifyJWT)
 app.use('/user', require('./routers/user'))
+//Hotel
 app.use('/booking', require('./routers/booking'))
-app.use('/bookingAirLine', require('./routers/airLineBooking'))
+
+//Plane
+app.use('/planeBooking', require('./routers/airLineBooking'))
 
 //error route
 app.all('*', (req, res) => {

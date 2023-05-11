@@ -40,8 +40,10 @@ const airCraftSchema = new Schema({
             bookingData: [
                 {
                     userID: { type: String },
-                    dataEnd: { type: String },
-                    finalPrice: { type: Number },
+                    departure: { type: String },
+                    arrival: { type: String },
+                    date: { type: String },
+                    price: { type: Number },
                 },
             ],
         },

@@ -3,14 +3,11 @@ const airLineBookingController = require('../controllers/airLineBookingControlle
 const verifyRoles = require('../middleware/verifyRoles')
 const roles = require('../config/roles_list')
 
-// User Id
-router.get('/:id', airLineBookingController.handleBooking)
-
-//Hotel Id + Room Id
+//AirLine Id + AirCraft Id
 router
     .route('/:id/:id')
     .get(
-        verifyRoles(roles.Admin, roles.User),
+        verifyRoles(roles.Admin),
         airLineBookingController.handleAllBookingByAirCraft
     )
     .post(
@@ -18,7 +15,7 @@ router
         airLineBookingController.handleCreateBooking
     )
 
-//Hotel Id + Room Id + Booking Id
+//AirLine Id + AirCraft Id + Booking Id
 router
     .route('/:id/:id/:id')
     .put(

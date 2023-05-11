@@ -132,6 +132,7 @@ const handleUploadImg = async (req, res) => {
     }
 }
 
+//Booking Hotel
 const handleBooking = async (req, res) => {
     const userID = req.params.id
     const { hotelId, roomId } = req.body
@@ -167,6 +168,44 @@ const handleBooking = async (req, res) => {
     }
 }
 
+//Booking Plane
+const handleBookingPlane = async (req, res) => {
+    const userID = req.params.id
+    const { airLineId, airCraftId } = req.body
+
+    //find and Get user by Id in DB
+    const currentUser = await User.findById({
+        _id: userID,
+    }).exec()
+
+    if (!currentUser) return res.status(401).json({ message: 'Not found' })
+
+    //find duplicate bookingAirLine
+    const bookingAirLine = currentUser.bookingAirLine.find(
+        (item) => item.airLineId === airLineId
+    )
+
+    //save update data to User
+    if (bookingAirLine) {
+        bookingAirLine.airCraftIds.push({ airCraftId })
+    } else {
+        currentUser.bookingAirLine.push({
+            airLineId,
+            airCraftIds: [{ airCraftId }],
+        })
+    }
+
+    try {
+        currentUser.save()
+
+        res.status(200).json({
+            message: 'User successfully update',
+        })
+    } catch (e) {
+        res.status(501).json({ message: 'User cant be update' })
+    }
+}
+
 module.exports = {
     handleDelete,
     handleUpdate,
@@ -174,4 +213,5 @@ module.exports = {
     handleUserById,
     handleUploadImg,
     handleBooking,
+    handleBookingPlane,
 }

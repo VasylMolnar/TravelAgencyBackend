@@ -22,11 +22,16 @@ router
     .put(verifyRoles(roles.User), userController.handleBooking)
 
 router
+    .route('/:id/bookingPlane')
+    .put(verifyRoles(roles.User), userController.handleBookingPlane)
+
+router
     .route('/:id')
     .get(verifyRoles(roles.Admin, roles.User), userController.handleUserById)
     .delete(verifyRoles(roles.Admin, roles.User), userController.handleDelete)
     .put(verifyRoles(roles.User), userController.handleUpdate)
 
+//save img Gallery
 router.post(
     '/:id/uploads',
     verifyRoles(roles.User),

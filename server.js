@@ -55,6 +55,7 @@ app.use('/room', require('./routers/room'))
 app.use('/gallery', require('./routers/gallery'))
 app.use('/airline', require('./routers/airline'))
 app.use('/aircraft', require('./routers/aircraft'))
+app.use('/callCenter', require('./routers/callCenter'))
 
 //private routes
 //verify User Auth by (JWT Access Token)

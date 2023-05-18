@@ -15,7 +15,7 @@ const userSchema = new Schema({
             type: Number,
             default: 2001,
         },
-        Editor: Number,
+        CallCenter: Number,
         Admin: Number,
     },
     password: {
